@@ -10,7 +10,6 @@ const useProducts = () => {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
 
   // Fetch categories
   const fetchCategories = useCallback(async () => {
@@ -51,7 +50,6 @@ const useProducts = () => {
             // First load: show first 20 products
             setProducts(allProducts.slice(0, limit));
             setPage(1);
-            setTotalProducts(allProducts.length);
             setHasMore(allProducts.length > limit);
           } else {
             // Load more: add next batch

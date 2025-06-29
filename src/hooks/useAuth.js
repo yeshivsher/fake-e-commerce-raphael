@@ -14,7 +14,7 @@ const useAuth = () => {
     if (!authStore.hasInitialized) {
       authStore.initializeAuth();
     }
-  }, []);
+  }, [authStore]);
 
   // Force reload cart data when component mounts if user is already authenticated
   useEffect(() => {
@@ -33,7 +33,12 @@ const useAuth = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [authStore.hasInitialized]); // Only run when auth is initialized
+  }, [
+    authStore.hasInitialized,
+    authStore.isAuthenticated,
+    authStore.user,
+    cartStore
+  ]);
 
   // Rehydrate cart when user authentication state changes
   useEffect(() => {
@@ -64,7 +69,12 @@ const useAuth = () => {
         previousUserIdRef.current = currentUserId;
       }
     }
-  }, [authStore.isAuthenticated, authStore.user, authStore.hasInitialized]); // Removed cartStore from dependencies
+  }, [
+    authStore.isAuthenticated,
+    authStore.user,
+    authStore.hasInitialized,
+    cartStore
+  ]);
 
   return authStore;
 };

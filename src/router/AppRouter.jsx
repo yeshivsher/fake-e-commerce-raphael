@@ -1,10 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Home from "../pages/Home";
 import Cart from "../pages/Cart";
@@ -161,17 +155,6 @@ const Navigation = () => {
       </div>
     </nav>
   );
-};
-
-// Protected Route component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
 };
 
 const AppRouter = () => {
