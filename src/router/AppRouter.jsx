@@ -19,8 +19,8 @@ const Navigation = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Debug logging
-  console.log("Navigation - isAuthenticated:", isAuthenticated);
-  console.log("Navigation - cart count:", getCartCount());
+  // console.log("Navigation - isAuthenticated:", isAuthenticated);
+  // console.log("Navigation - cart count:", getCartCount());
 
   useEffect(() => {
     // Check for saved dark mode preference
@@ -49,31 +49,34 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+    <nav className="glass-effect sticky top-0 z-50 border-b border-white/20 dark:border-gray-700/20 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              Fake Store
-            </h1>
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center shadow-soft">
+                <span className="text-white font-bold text-sm">F</span>
+              </div>
+              <h1 className="text-xl font-bold gradient-text">Fake Store</h1>
+            </div>
           </div>
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
             <a
               href="/"
-              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50"
             >
               Home
             </a>
             <a
               href="/cart"
-              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium relative"
+              className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50 relative"
             >
               Cart
               {getCartCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-soft animate-bounce-gentle">
                   {getCartCount()}
                 </span>
               )}
@@ -85,7 +88,7 @@ const Navigation = () => {
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="p-2 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-200"
             >
               {isDarkMode ? (
                 <svg
@@ -113,22 +116,22 @@ const Navigation = () => {
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 {user && (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+                  <div className="flex items-center space-x-3 bg-white/50 dark:bg-gray-700/50 px-3 py-2 rounded-lg">
+                    <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center shadow-soft">
                       <span className="text-white text-sm font-medium">
                         {user.name?.firstname?.charAt(0) ||
                           user.username?.charAt(0) ||
                           "U"}
                       </span>
                     </div>
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {user.name?.firstname || user.username}
                     </span>
                   </div>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50"
                 >
                   Logout
                 </button>
@@ -137,14 +140,11 @@ const Navigation = () => {
               <div className="flex items-center space-x-3">
                 <a
                   href="/login"
-                  className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50"
                 >
                   Login
                 </a>
-                <a
-                  href="/register"
-                  className="bg-primary-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-700"
-                >
+                <a href="/register" className="btn-primary text-sm">
                   Register
                 </a>
               </div>
@@ -170,7 +170,7 @@ const ProtectedRoute = ({ children }) => {
 const AppRouter = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Navigation />
         <main>
           <Routes>

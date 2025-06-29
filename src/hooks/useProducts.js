@@ -45,6 +45,7 @@ const useProducts = () => {
           // The Fake Store API doesn't support real pagination, so we'll simulate it
           response = await productsAPI.getAll(); // Get all products
           const allProducts = response.data;
+          console.log("🚀 ~ allProducts:", allProducts.length);
 
           if (reset) {
             // First load: show first 20 products

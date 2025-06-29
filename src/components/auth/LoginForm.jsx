@@ -31,7 +31,7 @@ const LoginForm = ({ onSubmit, isLoading, error, onClearError }) => {
       <div>
         <label
           htmlFor="username"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
           Username
         </label>
@@ -42,7 +42,7 @@ const LoginForm = ({ onSubmit, isLoading, error, onClearError }) => {
           value={formData.username}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="input-field"
           placeholder="Enter your username"
         />
       </div>
@@ -50,7 +50,7 @@ const LoginForm = ({ onSubmit, isLoading, error, onClearError }) => {
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
           Password
         </label>
@@ -61,14 +61,31 @@ const LoginForm = ({ onSubmit, isLoading, error, onClearError }) => {
           value={formData.password}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="input-field"
           placeholder="Enter your password"
         />
       </div>
 
       {error && (
-        <div className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-md p-3 dark:bg-red-900/20 dark:border-red-800">
-          {error}
+        <div className="bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border border-red-200 dark:border-red-800 rounded-xl p-4 animate-slide-down">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+            </div>
+          </div>
         </div>
       )}
 
@@ -77,34 +94,39 @@ const LoginForm = ({ onSubmit, isLoading, error, onClearError }) => {
         loading={isLoading}
         disabled={isLoading}
         className="w-full"
+        size="lg"
       >
         {isLoading ? "Signing in..." : "Sign In"}
       </Button>
 
-      <div className="text-sm text-gray-600 dark:text-gray-400">
-        <p>Demo credentials:</p>
-        <p>
-          Username:{" "}
-          <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
-            mor_2314
-          </code>
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          Demo credentials:
         </p>
-        <p>
-          Password:{" "}
-          <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
-            83r5^_
-          </code>
-        </p>
-        <p className="mt-2">
-          Or try:{" "}
-          <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
-            johnd
-          </code>{" "}
-          /{" "}
-          <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
-            m38rmF$
-          </code>
-        </p>
+        <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+          <p>
+            Username:{" "}
+            <code className="bg-white dark:bg-gray-900 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-600 font-mono">
+              mor_2314
+            </code>
+          </p>
+          <p>
+            Password:{" "}
+            <code className="bg-white dark:bg-gray-900 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-600 font-mono">
+              83r5^_
+            </code>
+          </p>
+          <p className="mt-3">
+            Or try:{" "}
+            <code className="bg-white dark:bg-gray-900 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-600 font-mono">
+              johnd
+            </code>{" "}
+            /{" "}
+            <code className="bg-white dark:bg-gray-900 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-600 font-mono">
+              m38rmF$
+            </code>
+          </p>
+        </div>
       </div>
     </form>
   );

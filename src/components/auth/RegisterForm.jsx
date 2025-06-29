@@ -60,7 +60,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
         <div>
           <label
             htmlFor="firstname"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             First Name
           </label>
@@ -71,7 +71,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
             value={formData.name.firstname}
             onChange={handleChange}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="input-field"
             placeholder="Enter your first name"
           />
         </div>
@@ -79,7 +79,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
         <div>
           <label
             htmlFor="lastname"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             Last Name
           </label>
@@ -90,7 +90,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
             value={formData.name.lastname}
             onChange={handleChange}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="input-field"
             placeholder="Enter your last name"
           />
         </div>
@@ -99,7 +99,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
           Email
         </label>
@@ -110,7 +110,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
           value={formData.email}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="input-field"
           placeholder="Enter your email"
         />
       </div>
@@ -118,7 +118,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
       <div>
         <label
           htmlFor="username"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
           Username
         </label>
@@ -129,7 +129,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
           value={formData.username}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="input-field"
           placeholder="Choose a username"
         />
       </div>
@@ -137,7 +137,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
           Password
         </label>
@@ -148,7 +148,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
           value={formData.password}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="input-field"
           placeholder="Choose a password"
         />
       </div>
@@ -156,7 +156,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
       <div>
         <label
           htmlFor="phone"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
         >
           Phone
         </label>
@@ -166,7 +166,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="input-field"
           placeholder="Enter your phone number"
         />
       </div>
@@ -175,7 +175,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
         <div>
           <label
             htmlFor="street"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             Street
           </label>
@@ -185,7 +185,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
             name="address.street"
             value={formData.address.street}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="input-field"
             placeholder="Enter street address"
           />
         </div>
@@ -193,7 +193,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
         <div>
           <label
             htmlFor="city"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             City
           </label>
@@ -203,15 +203,70 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
             name="address.city"
             value={formData.address.city}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="input-field"
             placeholder="Enter city"
           />
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label
+            htmlFor="number"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Number
+          </label>
+          <input
+            type="text"
+            id="number"
+            name="address.number"
+            value={formData.address.number}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="Enter number"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="zipcode"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Zip Code
+          </label>
+          <input
+            type="text"
+            id="zipcode"
+            name="address.zipcode"
+            value={formData.address.zipcode}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="Enter zip code"
+          />
+        </div>
+      </div>
+
       {error && (
-        <div className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-md p-3 dark:bg-red-900/20 dark:border-red-800">
-          {error}
+        <div className="bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border border-red-200 dark:border-red-800 rounded-xl p-4 animate-slide-down">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+            </div>
+          </div>
         </div>
       )}
 
@@ -220,6 +275,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
         loading={isLoading}
         disabled={isLoading}
         className="w-full"
+        size="lg"
       >
         {isLoading ? "Creating account..." : "Create Account"}
       </Button>
