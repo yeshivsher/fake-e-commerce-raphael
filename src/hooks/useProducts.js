@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { productsAPI } from "../api/fakestore";
+import { logError } from "../utils/errorUtils";
 
 const useProducts = () => {
   const [products, setProducts] = useState([]);
@@ -19,7 +20,7 @@ const useProducts = () => {
       setCategories(response.data);
     } catch (err) {
       setError("Failed to fetch categories");
-      console.error("Error fetching categories:", err);
+      logError("fetchCategories", err);
     }
   }, []);
 
@@ -69,7 +70,7 @@ const useProducts = () => {
         }
       } catch (err) {
         setError("Failed to fetch products");
-        console.error("Error fetching products:", err);
+        logError("fetchProducts", err);
       } finally {
         setIsLoading(false);
       }

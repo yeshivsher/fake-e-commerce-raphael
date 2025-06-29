@@ -1,73 +1,5 @@
 import { create } from "zustand";
-
-// Helper function to get current user ID for cart scoping
-const getCurrentUserId = () => {
-  try {
-    // First try to get from auth-storage (Zustand persist structure)
-    const authStore = JSON.parse(localStorage.getItem("auth-storage") || "{}");
-
-    // Check if auth store is properly initialized
-    if (!authStore.hasInitialized && !authStore.state?.hasInitialized) {
-      return "anonymous";
-    }
-
-    // Zustand persist stores data in different structures - try both
-    const user = authStore.user || authStore.state?.user;
-
-    if (user && user.id) {
-      // Use user ID as primary identifier (backward compatible format)
-      const userId = user.id.toString();
-      return userId;
-    } else if (user && user.username) {
-      // Fallback to username
-      const userId = user.username;
-      return userId;
-    } else if (user && user.email) {
-      // Fallback to email
-      const userId = user.email.replace(/[^a-zA-Z0-9]/g, "_");
-      return userId;
-    }
-
-    // Fallback: try to get from authToken
-    const token = localStorage.getItem("authToken");
-
-    if (token) {
-      try {
-        // Decode JWT token properly
-        const tokenParts = token.split(".");
-        if (tokenParts.length === 3) {
-          let base64Payload = tokenParts[1];
-          while (base64Payload.length % 4) {
-            base64Payload += "=";
-          }
-          const payload = JSON.parse(atob(base64Payload));
-
-          if (payload.sub) {
-            const userId = payload.sub.toString();
-            return userId;
-          } else if (payload.user) {
-            const userId = payload.user;
-            return userId;
-          }
-        }
-      } catch (error) {
-        console.error("Error parsing auth token:", error);
-      }
-    }
-
-    return "anonymous";
-  } catch (error) {
-    console.error("Error getting user ID for cart scoping:", error);
-    return "anonymous";
-  }
-};
-
-// Helper function to get cart key for current user
-const getCartKey = () => {
-  const userId = getCurrentUserId();
-  const cartKey = `cart-storage-${userId}`;
-  return cartKey;
-};
+import { getUserIdentifier, getCartKey } from "../utils/userUtils";
 
 // Helper function to check if cart data is expired
 const isCartExpired = (cartData) => {
@@ -198,13 +130,12 @@ const saveCartDataForCurrentUser = (items) => {
         items: items
       },
       timestamp: Date.now(), // Add timestamp for cleanup
-      userId: getCurrentUserId()
+      userId: getUserIdentifier()
     };
     localStorage.setItem(cartKey, JSON.stringify(cartData));
 
-    // Clean up old cart data periodically
-    if (Math.random() < 0.1) {
-      // 10% chance to run cleanup
+    // Clean up old cart data less frequently (1% chance instead of 10%)
+    if (Math.random() < 0.01) {
       cleanupOldCartData();
     }
   } catch (error) {
@@ -274,7 +205,7 @@ const useCartStore = create((set, get) => ({
   // Clear cart and storage completely (for logout)
   clearCartAndStorage: () => {
     try {
-      const userId = getCurrentUserId();
+      const userId = getUserIdentifier();
       const cartKey = `cart-storage-${userId}`;
       localStorage.removeItem(cartKey);
       localStorage.removeItem("cart-storage");
@@ -292,7 +223,7 @@ const useCartStore = create((set, get) => ({
   // Clear current user's cart data from localStorage (for logout)
   clearCurrentUserCart: () => {
     try {
-      const userId = getCurrentUserId();
+      const userId = getUserIdentifier();
       const cartKey = `cart-storage-${userId}`;
       localStorage.removeItem(cartKey);
       set({ items: [], currentUserId: null });
@@ -304,7 +235,7 @@ const useCartStore = create((set, get) => ({
   // Rehydrate cart for current user (called after auth is initialized)
   rehydrateCartForUser: () => {
     try {
-      const userId = getCurrentUserId();
+      const userId = getUserIdentifier();
       const currentUserId = get().currentUserId;
 
       // Always rehydrate if user has changed or if we haven't loaded yet
@@ -324,7 +255,7 @@ const useCartStore = create((set, get) => ({
   reloadCartData: () => {
     try {
       const cartData = loadCartDataForCurrentUser();
-      const userId = getCurrentUserId();
+      const userId = getUserIdentifier();
       set({
         items: cartData,
         currentUserId: userId

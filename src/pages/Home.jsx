@@ -158,16 +158,7 @@ const Home = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {isLoading && products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-              <div
-                className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-secondary-600 rounded-full animate-spin"
-                style={{
-                  animationDirection: "reverse",
-                  animationDuration: "1.5s"
-                }}
-              ></div>
-            </div>
+            <Spinner size="xl" />
             <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 animate-fade-in">
               Loading amazing products...
             </p>

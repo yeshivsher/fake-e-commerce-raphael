@@ -25,9 +25,8 @@ const useAuthStore = create(
           // Store token in localStorage
           localStorage.setItem("authToken", token);
 
-          // Get user data from JWT token
-          let user = null;
-
+          // Get user data from JWT token to extract user ID
+          let userId = null;
           try {
             // Decode JWT token (split by '.' and decode payload)
             const tokenParts = token.split(".");
@@ -41,22 +40,18 @@ const useAuthStore = create(
               }
 
               const payload = JSON.parse(atob(base64Payload));
-
-              user = {
-                id: payload.sub, // JWT standard uses 'sub' for user ID
-                username: payload.user || credentials.username
-              };
+              userId = payload.sub; // JWT standard uses 'sub' for user ID
             } else {
               throw new Error("Invalid JWT format - not 3 parts");
             }
           } catch (error) {
             console.error("JWT decode error:", error);
-            // If token can't be decoded, create a basic user object
-            user = {
-              id: Date.now(), // Fallback ID
-              username: credentials.username
-            };
+            throw new Error("Invalid authentication token");
           }
+
+          // Fetch full user data from API
+          const userResponse = await authAPI.getUser(userId);
+          const user = userResponse.data;
 
           set({
             user,
@@ -92,8 +87,8 @@ const useAuthStore = create(
           // Store token in localStorage
           localStorage.setItem("authToken", token);
 
-          // Get user data from JWT token
-          let user = null;
+          // Get user data from JWT token to extract user ID
+          let userId = null;
           try {
             // Decode JWT token (split by '.' and decode payload)
             const tokenParts = token.split(".");
@@ -104,21 +99,18 @@ const useAuthStore = create(
                 base64Payload += "=";
               }
               const payload = JSON.parse(atob(base64Payload));
-              user = {
-                id: payload.sub, // JWT standard uses 'sub' for user ID
-                username: payload.user || userData.username
-              };
+              userId = payload.sub; // JWT standard uses 'sub' for user ID
             } else {
               throw new Error("Invalid JWT format");
             }
           } catch (error) {
             console.error("JWT decode error:", error);
-            // If token can't be decoded, create a basic user object
-            user = {
-              id: Date.now(), // Fallback ID
-              username: userData.username
-            };
+            throw new Error("Invalid authentication token");
           }
+
+          // Fetch full user data from API
+          const userResponse = await authAPI.getUser(userId);
+          const user = userResponse.data;
 
           set({
             user,
@@ -163,7 +155,7 @@ const useAuthStore = create(
       clearError: () => set({ error: null }),
 
       // Initialize auth state from localStorage (only once)
-      initializeAuth: () => {
+      initializeAuth: async () => {
         const state = get();
 
         // Only initialize if not already done
@@ -184,10 +176,12 @@ const useAuthStore = create(
                 base64Payload += "=";
               }
               const payload = JSON.parse(atob(base64Payload));
-              const user = {
-                id: payload.sub, // JWT standard uses 'sub' for user ID
-                username: payload.user
-              };
+              const userId = payload.sub; // JWT standard uses 'sub' for user ID
+
+              // Fetch full user data from API
+              const { authAPI } = await import("../api/fakestore");
+              const userResponse = await authAPI.getUser(userId);
+              const user = userResponse.data;
 
               set({
                 user,

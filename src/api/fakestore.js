@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleAPIError } from "../utils/errorUtils";
 
 const API_BASE_URL = "https://fakestoreapi.com";
 
@@ -31,14 +32,7 @@ export const authAPI = {
       const response = await api.post("/auth/login", credentials);
       return response;
     } catch (error) {
-      // Handle API errors
-      if (error.response?.status === 401) {
-        throw new Error("Invalid credentials");
-      } else if (error.response?.status === 400) {
-        throw new Error("Invalid request data");
-      } else {
-        throw new Error("Login failed. Please try again.");
-      }
+      throw new Error(handleAPIError(error, "Login failed. Please try again."));
     }
   },
 
@@ -47,14 +41,9 @@ export const authAPI = {
       const response = await api.post("/auth/register", userData);
       return response;
     } catch (error) {
-      // Handle API errors
-      if (error.response?.status === 409) {
-        throw new Error("Username already exists");
-      } else if (error.response?.status === 400) {
-        throw new Error("Invalid registration data");
-      } else {
-        throw new Error("Registration failed. Please try again.");
-      }
+      throw new Error(
+        handleAPIError(error, "Registration failed. Please try again.")
+      );
     }
   },
 
@@ -72,7 +61,7 @@ export const authAPI = {
         }
       };
     } catch (error) {
-      throw new Error("Failed to get user data");
+      throw new Error(handleAPIError(error, "Failed to get user data"));
     }
   }
 };

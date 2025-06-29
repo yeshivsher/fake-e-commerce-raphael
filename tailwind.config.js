@@ -96,13 +96,7 @@ module.exports = {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "gradient-mesh": "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
-        "gradient-sunset":
-          "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-        "gradient-ocean": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        "gradient-fire": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-        "gradient-forest": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))"
       },
       boxShadow: {
         soft: "0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)",

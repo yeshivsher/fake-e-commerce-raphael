@@ -117,15 +117,22 @@ const Navigation = () => {
                   <div className="flex items-center space-x-3 bg-white/50 dark:bg-gray-700/50 px-3 py-2 rounded-lg">
                     <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center shadow-soft">
                       <span className="text-white text-sm font-medium">
-                        {user.name?.firstname?.charAt(0) ||
-                          user.username?.charAt(0) ||
+                        {user.name?.firstname?.charAt(0)?.toUpperCase() ||
+                          user.username?.charAt(0)?.toUpperCase() ||
                           "U"}
                       </span>
                     </div>
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {user.firstname && user.lastname
-                        ? `${user.firstname} ${user.lastname}`
-                        : user.username}
+                        ? `${
+                            user.firstname?.charAt(0)?.toUpperCase() +
+                            user.firstname?.slice(1)
+                          } ${
+                            user.lastname?.charAt(0)?.toUpperCase() +
+                            user.lastname?.slice(1)
+                          }`
+                        : user.username?.charAt(0)?.toUpperCase() +
+                          user.username?.slice(1)}
                     </span>
                   </div>
                 )}

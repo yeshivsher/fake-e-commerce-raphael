@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import useAuthStore from "../store/authStore";
 import useCartStore from "../store/cartStore";
+import { logError } from "../utils/errorUtils";
 
 const useAuth = () => {
   const authStore = useAuthStore();
@@ -13,7 +14,7 @@ const useAuth = () => {
     if (!authStore.hasInitialized) {
       authStore.initializeAuth();
     }
-  }, []); // Empty dependency array to run only once
+  }, []);
 
   // Force reload cart data when component mounts if user is already authenticated
   useEffect(() => {
@@ -26,7 +27,7 @@ const useAuth = () => {
         try {
           cartStore.rehydrateCartForUser();
         } catch (error) {
-          console.error("Error rehydrating cart on mount:", error);
+          logError("rehydrating cart on mount", error);
         }
       }, 100);
 
@@ -49,7 +50,7 @@ const useAuth = () => {
             try {
               cartStore.rehydrateCartForUser();
             } catch (error) {
-              console.error("Error rehydrating cart:", error);
+              logError("rehydrating cart", error);
             }
           }, 300);
 
