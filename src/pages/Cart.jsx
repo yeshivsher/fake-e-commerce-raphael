@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Button from "../components/ui/Button";
 import useCartStore from "../store/cartStore";
+import useAuth from "../hooks/useAuth";
 
 const Cart = () => {
   const {
@@ -11,6 +12,7 @@ const Cart = () => {
     getCartCount,
     clearCart
   } = useCartStore();
+  const { isAuthenticated } = useAuth();
 
   // Debug logging
   console.log("Cart items:", items);
@@ -26,6 +28,23 @@ const Cart = () => {
   const handleQuantityChange = (productId, newQuantity) => {
     updateQuantity(productId, parseInt(newQuantity) || 0);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="text-center">
+          <div className="text-6xl mb-6">🔒</div>
+          <h1 className="text-3xl font-bold mb-4">Sign in Required</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">
+            You need to be signed in to view your cart.
+          </p>
+          <Link to="/login" className="btn-primary">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (

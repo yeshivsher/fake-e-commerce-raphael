@@ -2,16 +2,22 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import Button from "../ui/Button";
 import useCartStore from "../../store/cartStore";
+import useAuth from "../../hooks/useAuth";
 
 const ProductCard = ({ product }) => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const addToCart = useCartStore((state) => state.addToCart);
   const getItemQuantity = useCartStore((state) => state.getItemQuantity);
+  const { isAuthenticated } = useAuth();
 
   const currentQuantity = getItemQuantity(product.id);
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      window.location.href = "/login";
+      return;
+    }
     setIsAddingToCart(true);
     try {
       console.log("Adding to cart:", product.title);

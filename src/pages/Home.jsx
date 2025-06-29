@@ -211,18 +211,6 @@ const Home = () => {
             ))}
           </InfiniteScroll>
         )}
-
-        {!hasMore && products.length > 0 && !selectedCategory && (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">🎉</div>
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
-              You've reached the end!
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-500">
-              You've seen all our amazing products.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

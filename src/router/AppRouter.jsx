@@ -15,7 +15,7 @@ import useCartStore from "../store/cartStore";
 // Navigation component
 const Navigation = () => {
   const { user, isAuthenticated, logout } = useAuth();
-  const { getCartCount } = useCartStore();
+  const { getCartCount, clearCartAndStorage } = useCartStore();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Debug logging
@@ -46,6 +46,7 @@ const Navigation = () => {
 
   const handleLogout = () => {
     logout();
+    clearCartAndStorage();
   };
 
   return (

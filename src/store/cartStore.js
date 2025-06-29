@@ -106,6 +106,24 @@ const useCartStore = create(
         set({ items: [] });
       },
 
+      // Clear cart and storage completely (for logout)
+      clearCartAndStorage: () => {
+        try {
+          const userId = getCurrentUserId();
+          const cartKey = `cart-storage-${userId}`;
+          localStorage.removeItem(cartKey);
+          localStorage.removeItem("cart-storage");
+        } catch (error) {
+          console.error("Error clearing cart storage:", error);
+        }
+        set({ items: [] });
+      },
+
+      // Reset cart state (for user changes)
+      resetCart: () => {
+        set({ items: [] });
+      },
+
       // Computed values
       getCartTotal: () => {
         const { items } = get();
@@ -128,11 +146,19 @@ const useCartStore = create(
     }),
     {
       name: "cart-storage",
+      storage: createUserSpecificStorage(),
       partialize: (state) => ({
         items: state.items
       })
     }
   )
 );
+
+// Listen for logout events and reset cart
+if (typeof window !== "undefined") {
+  window.addEventListener("userLoggedOut", () => {
+    useCartStore.getState().resetCart();
+  });
+}
 
 export default useCartStore;

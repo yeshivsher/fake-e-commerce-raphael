@@ -77,6 +77,31 @@ const useAuthStore = create(
       logout: () => {
         localStorage.removeItem("authToken");
 
+        // Clear cart data for the current user
+        try {
+          const authStore = JSON.parse(
+            localStorage.getItem("auth-storage") || "{}"
+          );
+          const user = authStore.state?.user;
+          const userId = user?.id || user?.username || "anonymous";
+
+          // Remove user-specific cart data
+          const cartKey = `cart-storage-${userId}`;
+          localStorage.removeItem(cartKey);
+
+          // Also clear the general cart storage as fallback
+          localStorage.removeItem("cart-storage");
+
+          // Clear any other cart-related storage
+          Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith("cart-storage")) {
+              localStorage.removeItem(key);
+            }
+          });
+        } catch (error) {
+          console.error("Error clearing cart data on logout:", error);
+        }
+
         set({
           user: null,
           token: null,
@@ -84,6 +109,9 @@ const useAuthStore = create(
           isLoading: false,
           error: null
         });
+
+        // Trigger a custom event to notify other stores
+        window.dispatchEvent(new CustomEvent("userLoggedOut"));
       },
 
       clearError: () => set({ error: null }),
