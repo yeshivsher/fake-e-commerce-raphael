@@ -14,6 +14,7 @@ const ProductCard = ({ product }) => {
   const currentQuantity = getItemQuantity(product.id);
 
   const handleAddToCart = async () => {
+    console.log("🚀 ~ handleAddToCart ~ isAuthenticated:", isAuthenticated);
     if (!isAuthenticated) {
       window.location.href = "/login";
       return;
@@ -22,12 +23,12 @@ const ProductCard = ({ product }) => {
     try {
       console.log("Adding to cart:", product.title);
       addToCart(product, 1);
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
       console.log("Added to cart successfully");
     } catch (error) {
       console.error("Error adding to cart:", error);
+      console.error("Error stack:", error.stack);
     } finally {
+      console.log("Finally block executing");
       setIsAddingToCart(false);
     }
   };

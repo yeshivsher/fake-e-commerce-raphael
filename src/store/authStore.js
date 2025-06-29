@@ -10,6 +10,7 @@ const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      hasInitialized: false,
 
       // Actions
       login: async (credentials) => {
@@ -17,17 +18,54 @@ const useAuthStore = create(
         try {
           const { authAPI } = await import("../api/fakestore");
           const response = await authAPI.login(credentials);
-          const { token, user } = response.data;
+
+          // Fake Store API returns just a token string
+          const token = response.data.token || response.data;
 
           // Store token in localStorage
           localStorage.setItem("authToken", token);
+
+          // Get user data from JWT token
+          let user = null;
+          
+          try {
+            // Decode JWT token (split by '.' and decode payload)
+            const tokenParts = token.split('.');
+            
+            if (tokenParts.length === 3) {
+              // Add padding if needed for base64 decoding
+              let base64Payload = tokenParts[1];
+              
+              while (base64Payload.length % 4) {
+                base64Payload += '=';
+              }
+              
+              const payload = JSON.parse(atob(base64Payload));
+              
+              user = {
+                id: payload.sub, // JWT standard uses 'sub' for user ID
+                username: payload.user || credentials.username
+              };
+              console.log('✅ Logged in user:', user);
+            } else {
+              throw new Error('Invalid JWT format - not 3 parts');
+            }
+          } catch (error) {
+            console.error('JWT decode error:', error);
+            // If token can't be decoded, create a basic user object
+            user = {
+              id: Date.now(), // Fallback ID
+              username: credentials.username
+            };
+          }
 
           set({
             user,
             token,
             isAuthenticated: true,
             isLoading: false,
-            error: null
+            error: null,
+            hasInitialized: true
           });
 
           return { success: true };
@@ -48,17 +86,49 @@ const useAuthStore = create(
         try {
           const { authAPI } = await import("../api/fakestore");
           const response = await authAPI.register(userData);
-          const { token, user } = response.data;
+
+          // Fake Store API returns just a token string
+          const token = response.data;
 
           // Store token in localStorage
           localStorage.setItem("authToken", token);
+
+          // Get user data from JWT token
+          let user = null;
+          try {
+            // Decode JWT token (split by '.' and decode payload)
+            const tokenParts = token.split('.');
+            if (tokenParts.length === 3) {
+              // Add padding if needed for base64 decoding
+              let base64Payload = tokenParts[1];
+              while (base64Payload.length % 4) {
+                base64Payload += '=';
+              }
+              const payload = JSON.parse(atob(base64Payload));
+              user = {
+                id: payload.sub, // JWT standard uses 'sub' for user ID
+                username: payload.user || userData.username
+              };
+              console.log('✅ Registered user:', user);
+            } else {
+              throw new Error('Invalid JWT format');
+            }
+          } catch (error) {
+            console.error('JWT decode error:', error);
+            // If token can't be decoded, create a basic user object
+            user = {
+              id: Date.now(), // Fallback ID
+              username: userData.username
+            };
+          }
 
           set({
             user,
             token,
             isAuthenticated: true,
             isLoading: false,
-            error: null
+            error: null,
+            hasInitialized: true
           });
 
           return { success: true };
@@ -75,84 +145,75 @@ const useAuthStore = create(
       },
 
       logout: () => {
+        // Remove token from localStorage
         localStorage.removeItem("authToken");
 
-        // Clear cart data for the current user
-        try {
-          const authStore = JSON.parse(
-            localStorage.getItem("auth-storage") || "{}"
-          );
-          const user = authStore.state?.user;
-          const userId = user?.id || user?.username || "anonymous";
+        // Clear persisted auth data
+        localStorage.removeItem("auth-storage");
 
-          // Remove user-specific cart data
-          const cartKey = `cart-storage-${userId}`;
-          localStorage.removeItem(cartKey);
-
-          // Also clear the general cart storage as fallback
-          localStorage.removeItem("cart-storage");
-
-          // Clear any other cart-related storage
-          Object.keys(localStorage).forEach((key) => {
-            if (key.startsWith("cart-storage")) {
-              localStorage.removeItem(key);
-            }
-          });
-        } catch (error) {
-          console.error("Error clearing cart data on logout:", error);
-        }
-
+        // Clear all auth state and mark as initialized to prevent auto-login
         set({
           user: null,
           token: null,
           isAuthenticated: false,
           isLoading: false,
-          error: null
+          error: null,
+          hasInitialized: true // Mark as initialized to prevent auto-login
         });
-
-        // Trigger a custom event to notify other stores
-        window.dispatchEvent(new CustomEvent("userLoggedOut"));
       },
 
       clearError: () => set({ error: null }),
 
-      // Initialize auth state from localStorage
+      // Initialize auth state from localStorage (only once)
       initializeAuth: () => {
+        const state = get();
+
+        // Only initialize if not already done
+        if (state.hasInitialized) {
+          return;
+        }
+
         const token = localStorage.getItem("authToken");
+
         if (token) {
           try {
-            // Decode the mock token to get user info
-            const tokenData = JSON.parse(atob(token));
-            const { authAPI } = require("../api/fakestore");
+            // Decode JWT token (split by '.' and decode payload)
+            const tokenParts = token.split('.');
+            if (tokenParts.length === 3) {
+              // Add padding if needed for base64 decoding
+              let base64Payload = tokenParts[1];
+              while (base64Payload.length % 4) {
+                base64Payload += '=';
+              }
+              const payload = JSON.parse(atob(base64Payload));
+              const user = {
+                id: payload.sub, // JWT standard uses 'sub' for user ID
+                username: payload.user
+              };
 
-            // Get user data
-            authAPI
-              .getUser(tokenData.userId)
-              .then((response) => {
-                set({
-                  user: response.data,
-                  token,
-                  isAuthenticated: true
-                });
-              })
-              .catch(() => {
-                // If user not found, clear auth
-                localStorage.removeItem("authToken");
-                set({
-                  user: null,
-                  token: null,
-                  isAuthenticated: false
-                });
+              set({
+                user,
+                token,
+                isAuthenticated: true,
+                hasInitialized: true
               });
+            } else {
+              throw new Error('Invalid JWT format');
+            }
           } catch (error) {
             // Invalid token, clear auth
             localStorage.removeItem("authToken");
+            localStorage.removeItem("auth-storage");
             set({
               user: null,
               token: null,
-              isAuthenticated: false
+              isAuthenticated: false,
+              hasInitialized: true
             });
           }
+        } else {
+          // No token, mark as initialized
+          set({ hasInitialized: true });
         }
       }
     }),
@@ -161,7 +222,8 @@ const useAuthStore = create(
       partialize: (state) => ({
         user: state.user,
         token: state.token,
-        isAuthenticated: state.isAuthenticated
+        isAuthenticated: state.isAuthenticated,
+        hasInitialized: state.hasInitialized
       })
     }
   )

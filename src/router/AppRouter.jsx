@@ -2,7 +2,8 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate
+  Navigate,
+  Link
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Home from "../pages/Home";
@@ -65,14 +66,14 @@ const Navigation = () => {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50"
             >
               Home
-            </a>
-            <a
-              href="/cart"
+            </Link>
+            <Link
+              to="/cart"
               className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50 relative"
             >
               Cart
@@ -81,7 +82,7 @@ const Navigation = () => {
                   {getCartCount()}
                 </span>
               )}
-            </a>
+            </Link>
           </div>
 
           {/* User Menu & Dark Mode Toggle */}
@@ -139,15 +140,15 @@ const Navigation = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-3">
-                <a
-                  href="/login"
+                <Link
+                  to="/login"
                   className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50"
                 >
                   Login
-                </a>
-                <a href="/register" className="btn-primary text-sm">
+                </Link>
+                <Link to="/register" className="btn-primary text-sm">
                   Register
-                </a>
+                </Link>
               </div>
             )}
           </div>

@@ -24,113 +24,73 @@ api.interceptors.request.use(
   }
 );
 
-// Mock authentication system since Fake Store API doesn't have auth endpoints
-const mockUsers = [
-  {
-    id: 1,
-    email: "john@gmail.com",
-    username: "johnd",
-    password: "m38rmF$",
-    name: {
-      firstname: "John",
-      lastname: "Doe"
-    },
-    address: {
-      city: "kilcoole",
-      street: "new road",
-      number: 7682,
-      zipcode: "12926-3874",
-      geolocation: {
-        lat: "-37.3159",
-        long: "81.1496"
-      }
-    },
-    phone: "1-570-236-7033"
-  },
-  {
-    id: 2,
-    email: "morrison@gmail.com",
-    username: "mor_2314",
-    password: "83r5^_",
-    name: {
-      firstname: "david",
-      lastname: "morrison"
-    },
-    address: {
-      city: "san Antonio",
-      street: "Lovers Ln",
-      number: 7267,
-      zipcode: "78205",
-      geolocation: {
-        lat: "-37.3159",
-        long: "81.1496"
-      }
-    },
-    phone: "1-570-236-7033"
-  }
-];
-
-// Auth endpoints (mock implementation)
+// Real authentication endpoints using Fake Store API
 export const authAPI = {
   login: async (credentials) => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const user = mockUsers.find(
-      (u) =>
-        u.username === credentials.username &&
-        u.password === credentials.password
-    );
-
-    if (user) {
-      // Create a mock token
-      const token = btoa(
-        JSON.stringify({ userId: user.id, username: user.username })
-      );
-      return { data: { token, user } };
-    } else {
-      throw new Error("Invalid credentials");
+    try {
+      const response = await api.post("/auth/login", credentials);
+      return response;
+    } catch (error) {
+      // Handle API errors
+      if (error.response?.status === 401) {
+        throw new Error("Invalid credentials");
+      } else if (error.response?.status === 400) {
+        throw new Error("Invalid request data");
+      } else {
+        throw new Error("Login failed. Please try again.");
+      }
     }
   },
 
   register: async (userData) => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Check if username already exists
-    const existingUser = mockUsers.find(
-      (u) => u.username === userData.username
-    );
-    if (existingUser) {
-      throw new Error("Username already exists");
+    try {
+      const response = await api.post("/auth/register", userData);
+      return response;
+    } catch (error) {
+      // Handle API errors
+      if (error.response?.status === 409) {
+        throw new Error("Username already exists");
+      } else if (error.response?.status === 400) {
+        throw new Error("Invalid registration data");
+      } else {
+        throw new Error("Registration failed. Please try again.");
+      }
     }
-
-    // Create new user
-    const newUser = {
-      id: mockUsers.length + 1,
-      ...userData
-    };
-
-    mockUsers.push(newUser);
-
-    // Auto-login after registration
-    const token = btoa(
-      JSON.stringify({ userId: newUser.id, username: newUser.username })
-    );
-    return { data: { token, user: newUser } };
   },
 
   getUser: async (userId) => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    try {
+      // Since Fake Store API doesn't have a specific user endpoint,
+      // we'll use the login endpoint to get user data
+      // This is a workaround since the API doesn't provide user profile endpoints
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
 
-    const user = mockUsers.find(
-      (u) => u.id === parseInt(userId) || u.username === userId
-    );
-    if (user) {
-      return { data: user };
-    } else {
-      throw new Error("User not found");
+      // Decode JWT token (split by '.' and decode payload)
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) {
+        throw new Error('Invalid JWT format');
+      }
+      
+      // Add padding if needed for base64 decoding
+      let base64Payload = tokenParts[1];
+      while (base64Payload.length % 4) {
+        base64Payload += '=';
+      }
+      
+      const payload = JSON.parse(atob(base64Payload));
+
+      // Return user data from JWT payload
+      return {
+        data: {
+          id: payload.sub, // JWT standard uses 'sub' for user ID
+          username: payload.user
+        }
+      };
+    } catch (error) {
+      throw new Error("Failed to get user data");
     }
   }
 };
