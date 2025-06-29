@@ -60,33 +60,15 @@ export const authAPI = {
 
   getUser: async (userId) => {
     try {
-      // Since Fake Store API doesn't have a specific user endpoint,
-      // we'll use the login endpoint to get user data
-      // This is a workaround since the API doesn't provide user profile endpoints
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        throw new Error("No authentication token found");
-      }
-
-      // Decode JWT token (split by '.' and decode payload)
-      const tokenParts = token.split('.');
-      if (tokenParts.length !== 3) {
-        throw new Error('Invalid JWT format');
-      }
-      
-      // Add padding if needed for base64 decoding
-      let base64Payload = tokenParts[1];
-      while (base64Payload.length % 4) {
-        base64Payload += '=';
-      }
-      
-      const payload = JSON.parse(atob(base64Payload));
-
-      // Return user data from JWT payload
+      const response = await api.get(`/users/${userId}`);
+      const user = response.data;
       return {
         data: {
-          id: payload.sub, // JWT standard uses 'sub' for user ID
-          username: payload.user
+          id: user.id,
+          username: user.username,
+          firstname: user.name.firstname,
+          lastname: user.name.lastname,
+          email: user.email
         }
       };
     } catch (error) {

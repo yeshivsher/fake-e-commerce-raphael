@@ -43,11 +43,8 @@ const useAuth = () => {
 
       // Check if user has changed (different user logged in) or if authentication state changed
       if (currentUserId !== previousUserId) {
-        console.log('👤 User changed:', previousUserId, '→', currentUserId);
-        
         if (authStore.isAuthenticated && authStore.user) {
           // User is authenticated, load their cart data
-          console.log('🔑 Loading cart for authenticated user:', currentUserId);
           const timer = setTimeout(() => {
             try {
               cartStore.rehydrateCartForUser();
@@ -59,7 +56,6 @@ const useAuth = () => {
           return () => clearTimeout(timer);
         } else {
           // User is not authenticated, clear cart
-          console.log('🚪 User logged out, clearing cart');
           cartStore.clearCurrentUserCart();
         }
 

@@ -34,14 +34,14 @@ const getCurrentUserId = () => {
     if (token) {
       try {
         // Decode JWT token properly
-        const tokenParts = token.split('.');
+        const tokenParts = token.split(".");
         if (tokenParts.length === 3) {
           let base64Payload = tokenParts[1];
           while (base64Payload.length % 4) {
-            base64Payload += '=';
+            base64Payload += "=";
           }
           const payload = JSON.parse(atob(base64Payload));
-          
+
           if (payload.sub) {
             const userId = payload.sub.toString();
             return userId;
@@ -66,7 +66,6 @@ const getCurrentUserId = () => {
 const getCartKey = () => {
   const userId = getCurrentUserId();
   const cartKey = `cart-storage-${userId}`;
-  console.log('🛒 Cart key for user:', userId, '→', cartKey);
   return cartKey;
 };
 
@@ -131,7 +130,6 @@ const migrateOldCartData = () => {
         try {
           const parsedData = JSON.parse(oldData);
           if (parsedData.state?.items && parsedData.state.items.length > 0) {
-            console.log('🔄 Migrating old cart data from', oldKey, 'to', getCartKey());
             // Save to new location
             saveCartDataForCurrentUser(parsedData.state.items);
             // Remove old data
@@ -158,12 +156,9 @@ const cleanupOldCartData = () => {
       key.startsWith("cart-storage")
     );
 
-    console.log('🧹 Cleanup check: Found', cartKeys.length, 'cart keys');
-
     // Keep only the most recent 100 cart entries to prevent localStorage bloat
     // Increased from 50 to 100 to be more conservative
     if (cartKeys.length > 100) {
-      console.log('🧹 Running cleanup - too many cart keys:', cartKeys.length);
       const cartDataWithTimestamps = cartKeys.map((key) => {
         try {
           const data = localStorage.getItem(key);
@@ -185,12 +180,9 @@ const cleanupOldCartData = () => {
         cartKeys.length - 100
       );
 
-      console.log('🧹 Removing old cart keys:', keysToRemove.map(k => k.key));
       keysToRemove.forEach(({ key }) => {
         localStorage.removeItem(key);
       });
-    } else {
-      console.log('🧹 No cleanup needed');
     }
   } catch (error) {
     console.error("Error cleaning up old cart data:", error);
@@ -315,16 +307,9 @@ const useCartStore = create((set, get) => ({
       const userId = getCurrentUserId();
       const currentUserId = get().currentUserId;
 
-      console.log('🔄 Rehydrating cart - Current user:', currentUserId, '→ New user:', userId);
-
-      // Show all cart keys in localStorage for debugging
-      const allKeys = Object.keys(localStorage).filter(key => key.startsWith('cart-storage'));
-      console.log('💾 All cart keys in localStorage:', allKeys);
-
       // Always rehydrate if user has changed or if we haven't loaded yet
       if (userId !== currentUserId || currentUserId === null) {
         const cartData = loadCartDataForCurrentUser();
-        console.log('📦 Loaded cart data for user', userId, ':', cartData);
         set({
           items: cartData,
           currentUserId: userId
@@ -335,7 +320,7 @@ const useCartStore = create((set, get) => ({
     }
   },
 
-  // Force reload cart data (useful for debugging)
+  // Force reload cart data
   reloadCartData: () => {
     try {
       const cartData = loadCartDataForCurrentUser();

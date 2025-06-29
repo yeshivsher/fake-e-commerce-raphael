@@ -19,10 +19,6 @@ const Navigation = () => {
   const { getCartCount, clearCartAndStorage } = useCartStore();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Debug logging
-  // console.log("Navigation - isAuthenticated:", isAuthenticated);
-  // console.log("Navigation - cart count:", getCartCount());
-
   useEffect(() => {
     // Check for saved dark mode preference
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
@@ -127,7 +123,9 @@ const Navigation = () => {
                       </span>
                     </div>
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {user.name?.firstname || user.username}
+                      {user.firstname && user.lastname
+                        ? `${user.firstname} ${user.lastname}`
+                        : user.username}
                     </span>
                   </div>
                 )}

@@ -14,10 +14,6 @@ const Cart = () => {
   } = useCartStore();
   const { isAuthenticated } = useAuth();
 
-  // Debug logging
-  console.log("Cart items:", items);
-  console.log("Cart count:", getCartCount());
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
