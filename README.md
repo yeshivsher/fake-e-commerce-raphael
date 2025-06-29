@@ -2,7 +2,7 @@
 
 A modern React e-commerce application built with Zustand, Tailwind CSS, and the Fake Store API.
 
-**Open** [https://fake-e-commerce-raphael.vercel.app/](Demo)
+**Open** [Demo](https://fake-e-commerce-raphael.vercel.app/)
 
 ## Features
 
