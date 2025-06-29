@@ -38,7 +38,8 @@ export const authAPI = {
 
   register: async (userData) => {
     try {
-      const response = await api.post("/auth/register", userData);
+      // FakeStore API uses /users endpoint for registration
+      const response = await api.post("/users", userData);
       return response;
     } catch (error) {
       throw new Error(
@@ -55,8 +56,8 @@ export const authAPI = {
         data: {
           id: user.id,
           username: user.username,
-          firstname: user.name.firstname,
-          lastname: user.name.lastname,
+          firstname: user.name?.firstname || "",
+          lastname: user.name?.lastname || "",
           email: user.email
         }
       };

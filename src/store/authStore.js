@@ -79,38 +79,30 @@ const useAuthStore = create(
         set({ isLoading: true, error: null });
         try {
           const { authAPI } = await import("../api/fakestore");
+          console.log("Registration - userData received:", userData);
           const response = await authAPI.register(userData);
+          console.log("Registration - API response:", response.data);
 
-          // Fake Store API returns just a token string
-          const token = response.data;
+          // Fake Store API /users endpoint returns only {"id": userId}
+          const userResponse = response.data;
+
+          // For registration, we don't get a token, so we'll use the user ID as a simple identifier
+          // In a real app, you'd typically get a token after registration
+          const token = `user_${userResponse.id}`;
 
           // Store token in localStorage
           localStorage.setItem("authToken", token);
 
-          // Get user data from JWT token to extract user ID
-          let userId = null;
-          try {
-            // Decode JWT token (split by '.' and decode payload)
-            const tokenParts = token.split(".");
-            if (tokenParts.length === 3) {
-              // Add padding if needed for base64 decoding
-              let base64Payload = tokenParts[1];
-              while (base64Payload.length % 4) {
-                base64Payload += "=";
-              }
-              const payload = JSON.parse(atob(base64Payload));
-              userId = payload.sub; // JWT standard uses 'sub' for user ID
-            } else {
-              throw new Error("Invalid JWT format");
-            }
-          } catch (error) {
-            console.error("JWT decode error:", error);
-            throw new Error("Invalid authentication token");
-          }
+          // Create user object from the original form data and the returned ID
+          const user = {
+            id: userResponse.id,
+            username: userData.username,
+            firstname: userData.name?.firstname || "",
+            lastname: userData.name?.lastname || "",
+            email: userData.email
+          };
 
-          // Fetch full user data from API
-          const userResponse = await authAPI.getUser(userId);
-          const user = userResponse.data;
+          console.log("Registration - created user object:", user);
 
           set({
             user,
@@ -123,6 +115,7 @@ const useAuthStore = create(
 
           return { success: true };
         } catch (error) {
+          console.error("Registration error:", error);
           set({
             isLoading: false,
             error: error.message || "Registration failed"
@@ -167,16 +160,10 @@ const useAuthStore = create(
 
         if (token) {
           try {
-            // Decode JWT token (split by '.' and decode payload)
-            const tokenParts = token.split(".");
-            if (tokenParts.length === 3) {
-              // Add padding if needed for base64 decoding
-              let base64Payload = tokenParts[1];
-              while (base64Payload.length % 4) {
-                base64Payload += "=";
-              }
-              const payload = JSON.parse(atob(base64Payload));
-              const userId = payload.sub; // JWT standard uses 'sub' for user ID
+            // Check if it's a user token (from registration) or JWT token (from login)
+            if (token.startsWith("user_")) {
+              // User token from registration
+              const userId = token.replace("user_", "");
 
               // Fetch full user data from API
               const { authAPI } = await import("../api/fakestore");
@@ -190,7 +177,31 @@ const useAuthStore = create(
                 hasInitialized: true
               });
             } else {
-              throw new Error("Invalid JWT format");
+              // JWT token from login
+              const tokenParts = token.split(".");
+              if (tokenParts.length === 3) {
+                // Add padding if needed for base64 decoding
+                let base64Payload = tokenParts[1];
+                while (base64Payload.length % 4) {
+                  base64Payload += "=";
+                }
+                const payload = JSON.parse(atob(base64Payload));
+                const userId = payload.sub; // JWT standard uses 'sub' for user ID
+
+                // Fetch full user data from API
+                const { authAPI } = await import("../api/fakestore");
+                const userResponse = await authAPI.getUser(userId);
+                const user = userResponse.data;
+
+                set({
+                  user,
+                  token,
+                  isAuthenticated: true,
+                  hasInitialized: true
+                });
+              } else {
+                throw new Error("Invalid JWT format");
+              }
             }
           } catch (error) {
             // Invalid token, clear auth

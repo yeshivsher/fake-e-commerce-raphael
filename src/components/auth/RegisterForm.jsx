@@ -14,7 +14,7 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
     address: {
       city: "",
       street: "",
-      number: "",
+      number: 0,
       zipcode: "",
       geolocation: {
         lat: "",
@@ -28,14 +28,29 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
     const { name, value } = e.target;
 
     if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value
-        }
-      }));
+      const parts = name.split(".");
+      if (parts.length === 2) {
+        const [parent, child] = parts;
+        setFormData((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: name === "address.number" ? parseInt(value) || 0 : value
+          }
+        }));
+      } else if (parts.length === 3) {
+        const [parent, child, grandchild] = parts;
+        setFormData((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: {
+              ...prev[parent][child],
+              [grandchild]: value
+            }
+          }
+        }));
+      }
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -218,10 +233,10 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
             Number
           </label>
           <input
-            type="text"
+            type="number"
             id="number"
             name="address.number"
-            value={formData.address.number}
+            value={formData.address.number || ""}
             onChange={handleChange}
             className="input-field"
             placeholder="Enter number"
@@ -243,6 +258,44 @@ const RegisterForm = ({ onSubmit, isLoading, error, onClearError }) => {
             onChange={handleChange}
             className="input-field"
             placeholder="Enter zip code"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label
+            htmlFor="latitude"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Latitude (Optional)
+          </label>
+          <input
+            type="text"
+            id="latitude"
+            name="address.geolocation.lat"
+            value={formData.address.geolocation.lat}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="Enter latitude (e.g., -37.3159)"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="longitude"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Longitude (Optional)
+          </label>
+          <input
+            type="text"
+            id="longitude"
+            name="address.geolocation.long"
+            value={formData.address.geolocation.long}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="Enter longitude (e.g., 81.1496)"
           />
         </div>
       </div>
